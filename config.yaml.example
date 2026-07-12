@@ -1,0 +1,57 @@
+# =============================================================================
+# LLM Chat App 設定ファイル
+# =============================================================================
+# このファイルをコピーして config.yaml として使用してください。
+# API_Keyは環境変数を参照するか、直接記述できます。
+# 注意: config.yaml は .gitignore に含まれ、Gitにコミットされません。
+# =============================================================================
+
+# --- API設定（API_Chat_Client用） ---
+api:
+  # 使用するAPIプロバイダー: openai, claude, gemini
+  provider: "openai"
+
+  # API認証キー（環境変数から読み込む場合は ${ENV_VAR} 形式）
+  api_key: "${OPENAI_API_KEY}"
+
+  # 使用するモデル名
+  # OpenAI: gpt-3.5-turbo, gpt-4, gpt-4-turbo
+  # Claude: claude-3-haiku-20240307, claude-3-sonnet-20240229, claude-3-opus-20240229
+  # Gemini: gemini-pro, gemini-1.5-pro
+  model: "gpt-3.5-turbo"
+
+# --- ローカルモデル設定（Local_Chat_Client用） ---
+local:
+  # バックエンド: llama_cpp, ollama
+  backend: "llama_cpp"
+
+  # モデルファイルのパス（.gguf形式）
+  model_path: "./models/llama-2-7b-chat.Q4_K_M.gguf"
+
+  # コンテキストウィンドウサイズ（トークン数）
+  n_ctx: 2048
+
+  # GPU使用レイヤー数（0=CPUのみ、-1=全レイヤーGPU）
+  n_gpu_layers: 0
+
+# --- 共通設定 ---
+common:
+  # 生成時の温度パラメータ（0.0-2.0、高いほどランダム）
+  temperature: 0.7
+
+  # 最大生成トークン数
+  max_tokens: 2000
+
+  # 会話履歴の最大トークン数（超過時は古い履歴を削減）
+  history_max_tokens: 4000
+
+# --- ログ設定 ---
+logging:
+  # ログ出力の有効/無効
+  enabled: true
+
+  # ログレベル: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
+
+  # ログファイルのパス
+  file: "logs/chat.log"

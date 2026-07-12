@@ -1,0 +1,25 @@
+# === ランタイム依存関係 ===
+# LLM API SDK
+openai>=1.0.0
+anthropic>=0.7.0
+google-generativeai>=0.3.0
+
+# ローカルモデル実行
+llama-cpp-python>=0.2.0
+
+# 設定管理
+pyyaml>=6.0
+
+# === 開発用依存関係 ===
+# テスト
+pytest>=7.4.0
+pytest-mock>=3.12.0
+hypothesis>=6.92.0
+
+# 型チェック
+mypy>=1.7.0
+
+# コード品質
+black>=23.12.0
+flake8>=7.0.0
+isort>=5.13.0

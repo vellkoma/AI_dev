@@ -1,0 +1,61 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# === 仮想環境 ===
+.venv/
+venv/
+ENV/
+env/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === 設定ファイル（シークレット含む） ===
+config.yaml
+config.yml
+.env
+*.env
+
+# === モデルファイル ===
+models/*.gguf
+models/*.bin
+models/*.safetensors
+models/*.pt
+models/*.onnx
+
+# === ログファイル ===
+logs/*.log
+logs/*.log.*
+*.log
+
+# === 会話履歴 ===
+conversations/*.json
+
+# === テスト関連 ===
+.pytest_cache/
+.coverage
+htmlcov/
+.hypothesis/
+
+# === mypy ===
+.mypy_cache/
+
+# === OS固有 ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Kiro ===
+.kiro/
