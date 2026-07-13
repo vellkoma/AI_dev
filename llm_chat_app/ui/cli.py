@@ -156,7 +156,7 @@ class Chat_Interface:
         """
         model_info = self.orchestrator.get_model_info()
         model_name = model_info.get("model", "不明")
-        provider = model_info.get("provider", "不明")
+        provider = model_info.get("provider") or model_info.get("backend", "不明")
 
         print("=" * 60)
         print("  LLM Chat App - ポートフォリオプロジェクト")
