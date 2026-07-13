@@ -544,24 +544,33 @@ class API_Chat_Client(BaseLLMClient):
         Returns:
             LLMResponse: レスポンスデータ
         """
-        from google.api_core import exceptions as google_exceptions
+        from google.genai import types as genai_types
 
         # メッセージをGemini形式に変換
-        # Geminiはroleが "user" と "model" のみ対応
+        # 新しいgoogle-genai SDKではtypes.Contentオブジェクトを使用
         formatted_contents = []
         for msg in messages:
             if msg.role == "system":
                 # systemメッセージはuserメッセージとして追加
                 formatted_contents.append(
-                    {"role": "user", "parts": [msg.content]}
+                    genai_types.Content(
+                        role="user",
+                        parts=[genai_types.Part(text=msg.content)],
+                    )
                 )
             elif msg.role == "assistant":
                 formatted_contents.append(
-                    {"role": "model", "parts": [msg.content]}
+                    genai_types.Content(
+                        role="model",
+                        parts=[genai_types.Part(text=msg.content)],
+                    )
                 )
             else:
                 formatted_contents.append(
-                    {"role": "user", "parts": [msg.content]}
+                    genai_types.Content(
+                        role="user",
+                        parts=[genai_types.Part(text=msg.content)],
+                    )
                 )
 
         for attempt in range(MAX_RETRIES + 1):
@@ -575,42 +584,30 @@ class API_Chat_Client(BaseLLMClient):
                 else:
                     return self._non_stream_gemini(formatted_contents, start_time)
 
-            except google_exceptions.Unauthenticated as e:
-                logger.error(f"Gemini認証エラー: {e}")
-                raise AuthenticationError(
-                    details=str(e),
-                )
-            except google_exceptions.PermissionDenied as e:
-                logger.error(f"Gemini権限エラー: {e}")
-                raise AuthenticationError(
-                    details=str(e),
-                )
-            except google_exceptions.ResourceExhausted as e:
-                if attempt < MAX_RETRIES:
-                    delay = BASE_DELAY_SECONDS * (2**attempt)
-                    logger.warning(
-                        f"Geminiレート制限 (試行 {attempt + 1}/{MAX_RETRIES})"
-                        f" - {delay}秒後にリトライ"
-                    )
-                    time.sleep(delay)
+            except Exception as e:
+                error_str = str(e).lower()
+                # エラー内容から適切な例外に変換
+                if "401" in error_str or "unauthenticated" in error_str or "permission" in error_str:
+                    logger.error(f"Gemini認証エラー: {e}")
+                    raise AuthenticationError(details=str(e))
+                elif "429" in error_str or "resource_exhausted" in error_str or "quota" in error_str:
+                    if attempt < MAX_RETRIES:
+                        delay = BASE_DELAY_SECONDS * (2**attempt)
+                        logger.warning(
+                            f"Geminiレート制限 (試行 {attempt + 1}/{MAX_RETRIES})"
+                            f" - {delay}秒後にリトライ"
+                        )
+                        time.sleep(delay)
+                        continue
+                    else:
+                        logger.error(f"Geminiレート制限: リトライ上限到達: {e}")
+                        raise RateLimitError(details=str(e))
+                elif "unavailable" in error_str or "timeout" in error_str or "connection" in error_str:
+                    logger.error(f"Geminiネットワークエラー: {e}")
+                    raise NetworkError(details=str(e))
                 else:
-                    logger.error(f"Geminiレート制限: リトライ上限到達: {e}")
-                    raise RateLimitError(
-                        details=str(e),
-                    )
-            except (
-                google_exceptions.ServiceUnavailable,
-                google_exceptions.DeadlineExceeded,
-                ConnectionError,
-                OSError,
-            ) as e:
-                logger.error(f"Geminiネットワークエラー: {e}")
-                raise NetworkError(
-                    details=str(e),
-                )
-            except google_exceptions.InvalidArgument as e:
-                logger.error(f"Gemini APIエラー（無効な引数）: {e}")
-                raise NetworkError(details=str(e))
+                    logger.error(f"Gemini APIエラー: {e}")
+                    raise NetworkError(details=str(e))
 
         # リトライ上限到達
         raise RateLimitError(details="リトライ上限に到達しました")
