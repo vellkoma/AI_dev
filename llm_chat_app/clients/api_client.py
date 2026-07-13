@@ -84,10 +84,9 @@ class API_Chat_Client(BaseLLMClient):
 
             self.client = anthropic.Anthropic(api_key=self.api_key)
         elif self.provider == APIProvider.GEMINI:
-            import google.generativeai as genai
+            from google import genai
 
-            genai.configure(api_key=self.api_key)
-            self.client = genai.GenerativeModel(self.model)
+            self.client = genai.Client(api_key=self.api_key)
 
     def send_message(
         self,
@@ -632,22 +631,22 @@ class API_Chat_Client(BaseLLMClient):
         Returns:
             LLMResponse: 構築された完全なレスポンス
         """
-        import google.generativeai as genai
+        from google.genai import types
 
         collected_content = ""
 
-        generation_config = genai.types.GenerationConfig(
+        config = types.GenerateContentConfig(
             temperature=self.temperature,
             max_output_tokens=self.max_tokens,
         )
 
-        response = self.client.generate_content(
-            formatted_contents,
-            generation_config=generation_config,
-            stream=True,
+        response_stream = self.client.models.generate_content_stream(
+            model=self.model,
+            contents=formatted_contents,
+            config=config,
         )
 
-        for chunk in response:
+        for chunk in response_stream:
             if chunk.text:
                 collected_content += chunk.text
                 if on_token:
@@ -655,15 +654,15 @@ class API_Chat_Client(BaseLLMClient):
 
         response_time = time.time() - start_time
 
-        # Geminiはusage情報を別途取得
+        # usage情報の取得
         usage = None
-        if hasattr(response, "usage_metadata") and response.usage_metadata:
+        if hasattr(chunk, "usage_metadata") and chunk.usage_metadata:
             usage = {
                 "prompt_tokens": getattr(
-                    response.usage_metadata, "prompt_token_count", 0
+                    chunk.usage_metadata, "prompt_token_count", 0
                 ),
                 "completion_tokens": getattr(
-                    response.usage_metadata, "candidates_token_count", 0
+                    chunk.usage_metadata, "candidates_token_count", 0
                 ),
             }
 
@@ -688,17 +687,17 @@ class API_Chat_Client(BaseLLMClient):
         Returns:
             LLMResponse: レスポンスデータ
         """
-        import google.generativeai as genai
+        from google.genai import types
 
-        generation_config = genai.types.GenerationConfig(
+        config = types.GenerateContentConfig(
             temperature=self.temperature,
             max_output_tokens=self.max_tokens,
         )
 
-        response = self.client.generate_content(
-            formatted_contents,
-            generation_config=generation_config,
-            stream=False,
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=formatted_contents,
+            config=config,
         )
 
         response_time = time.time() - start_time

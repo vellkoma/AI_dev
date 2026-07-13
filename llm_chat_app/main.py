@@ -200,7 +200,7 @@ def _create_api_client(args: argparse.Namespace, config):
         default_models = {
             APIProvider.OPENAI: "gpt-3.5-turbo",
             APIProvider.CLAUDE: "claude-sonnet-5",
-            APIProvider.GEMINI: "gemini-pro",
+            APIProvider.GEMINI: "gemini-2.5-flash",
         }
         model = default_models.get(provider, config.api_model)
 
