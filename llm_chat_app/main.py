@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import sys
 import traceback
+from typing import Optional
 
 from llm_chat_app.clients.base import APIProvider, LocalModelBackend
 from llm_chat_app.exceptions import ChatAppError
@@ -104,6 +105,43 @@ def main() -> None:
         sys.exit(1)
 
 
+def _resolve_api_key(provider: APIProvider, config_api_key: Optional[str]) -> Optional[str]:
+    """プロバイダーに応じたAPIキーを解決する。
+
+    以下の優先順位でAPIキーを取得する:
+    1. config.yamlのapi_keyが有効な値（環境変数展開済み）ならそれを使用
+    2. プロバイダーに応じた環境変数から自動取得
+
+    Args:
+        provider: 使用するAPIプロバイダー
+        config_api_key: config.yamlから読み込んだAPIキー（展開済み）
+
+    Returns:
+        解決されたAPIキー文字列、または取得できない場合はNone
+    """
+    import os
+
+    # プロバイダーごとの環境変数名
+    env_var_map = {
+        APIProvider.OPENAI: "OPENAI_API_KEY",
+        APIProvider.CLAUDE: "ANTHROPIC_API_KEY",
+        APIProvider.GEMINI: "GOOGLE_API_KEY",
+    }
+
+    # config.yamlのキーが有効ならそのまま使用（ただしプロバイダー固有の環境変数を優先）
+    provider_env_var = env_var_map.get(provider)
+    if provider_env_var:
+        env_key = os.environ.get(provider_env_var)
+        if env_key:
+            return env_key
+
+    # フォールバック: config.yamlの値を使用
+    if config_api_key:
+        return config_api_key
+
+    return None
+
+
 def _create_api_client(args: argparse.Namespace, config):
     """APIモードのLLMクライアントを生成する。
 
@@ -138,17 +176,38 @@ def _create_api_client(args: argparse.Namespace, config):
             details=f"有効な値: {valid_providers}",
         )
 
-    # APIキーの確認
-    if not config.api_key:
+    # APIキーの決定: プロバイダーに応じた環境変数を自動取得
+    api_key = _resolve_api_key(provider, config.api_key)
+    if not api_key:
+        env_var_names = {
+            APIProvider.OPENAI: "OPENAI_API_KEY",
+            APIProvider.CLAUDE: "ANTHROPIC_API_KEY",
+            APIProvider.GEMINI: "GOOGLE_API_KEY",
+        }
+        expected_env = env_var_names.get(provider, "不明")
         raise ConfigurationError(
             message="APIキーが設定されていません。",
-            details="config.yaml の api.api_key または環境変数を設定してください。",
+            details=(
+                f"プロバイダー '{provider.value}' 用のAPIキーを設定してください。\n"
+                f"環境変数 {expected_env} を設定するか、config.yaml の api.api_key を更新してください。"
+            ),
         )
+
+    # プロバイダーに応じたデフォルトモデル名
+    model = config.api_model
+    if args.provider and args.provider != config.api_provider:
+        # コマンドラインでプロバイダーを切り替えた場合、モデルもデフォルトに変更
+        default_models = {
+            APIProvider.OPENAI: "gpt-3.5-turbo",
+            APIProvider.CLAUDE: "claude-3-haiku-20240307",
+            APIProvider.GEMINI: "gemini-pro",
+        }
+        model = default_models.get(provider, config.api_model)
 
     return API_Chat_Client(
         provider=provider,
-        api_key=config.api_key,
-        model=config.api_model,
+        api_key=api_key,
+        model=model,
         temperature=config.temperature,
         max_tokens=config.max_tokens,
     )
