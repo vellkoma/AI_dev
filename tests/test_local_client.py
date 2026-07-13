@@ -105,18 +105,19 @@ class TestLocalChatClientFormatPrompt:
     """_format_prompt()メソッドのテスト。"""
 
     def test_format_user_message(self):
-        """ユーザーメッセージが[INST]タグで囲まれることを確認。"""
+        """ユーザーメッセージがChatML形式でフォーマットされることを確認。"""
         client, _ = _create_llama_cpp_client_with_mock()
         messages = [
             Message(role="user", content="こんにちは", timestamp=time.time())
         ]
         result = client._format_prompt(messages)
-        assert "[INST]" in result
+        assert "<|im_start|>user" in result
         assert "こんにちは" in result
-        assert "[/INST]" in result
+        assert "<|im_end|>" in result
+        assert "<|im_start|>assistant" in result
 
     def test_format_system_message(self):
-        """システムメッセージが<<SYS>>タグで囲まれることを確認。"""
+        """システムメッセージがChatML形式でフォーマットされることを確認。"""
         client, _ = _create_llama_cpp_client_with_mock()
         messages = [
             Message(
@@ -127,9 +128,8 @@ class TestLocalChatClientFormatPrompt:
             Message(role="user", content="こんにちは", timestamp=time.time()),
         ]
         result = client._format_prompt(messages)
-        assert "<<SYS>>" in result
+        assert "<|im_start|>system" in result
         assert "あなたはAIアシスタントです。" in result
-        assert "<</SYS>>" in result
 
     def test_format_multi_turn_conversation(self):
         """複数ターンの会話が正しくフォーマットされることを確認。"""
@@ -140,7 +140,8 @@ class TestLocalChatClientFormatPrompt:
             Message(role="user", content="質問2", timestamp=time.time()),
         ]
         result = client._format_prompt(messages)
-        assert result.count("[INST]") == 2
+        assert "<|im_start|>user" in result
+        assert "<|im_start|>assistant" in result
         assert "質問1" in result
         assert "回答1" in result
         assert "質問2" in result

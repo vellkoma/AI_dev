@@ -211,8 +211,8 @@ class Local_Chat_Client(BaseLLMClient):
     def _format_prompt(self, messages: List[Message]) -> str:
         """メッセージリストをプロンプト文字列に変換する。
 
-        Llama2チャットテンプレート形式でメッセージを結合します。
-        [INST]タグでユーザーメッセージを、<<SYS>>タグでシステムメッセージを囲みます。
+        ChatML形式（Qwen等）でフォーマットします。
+        多くの最新モデルがこの形式に対応しています。
 
         Args:
             messages: 会話履歴のメッセージリスト
@@ -221,33 +221,16 @@ class Local_Chat_Client(BaseLLMClient):
             フォーマット済みのプロンプト文字列
         """
         formatted_parts: List[str] = []
-        system_message = ""
 
-        # システムメッセージの抽出
         for msg in messages:
-            if msg.role == "system":
-                system_message = msg.content
-                break
+            formatted_parts.append(
+                f"<|im_start|>{msg.role}\n{msg.content}<|im_end|>"
+            )
 
-        # メッセージの変換
-        for msg in messages:
-            if msg.role == "system":
-                # システムメッセージは別途処理済み
-                continue
-            elif msg.role == "user":
-                if system_message and not formatted_parts:
-                    # 最初のユーザーメッセージにシステムプロンプトを付加
-                    formatted_parts.append(
-                        f"[INST] <<SYS>>\n{system_message}\n<</SYS>>\n\n"
-                        f"{msg.content} [/INST]"
-                    )
-                    system_message = ""  # 一度だけ追加
-                else:
-                    formatted_parts.append(f"[INST] {msg.content} [/INST]")
-            elif msg.role == "assistant":
-                formatted_parts.append(f" {msg.content} ")
+        # アシスタントの応答開始トークンを追加
+        formatted_parts.append("<|im_start|>assistant\n")
 
-        return "".join(formatted_parts)
+        return "\n".join(formatted_parts)
 
     def send_message(
         self,
@@ -314,6 +297,7 @@ class Local_Chat_Client(BaseLLMClient):
                 prompt,
                 max_tokens=self.max_tokens,
                 temperature=self.temperature,
+                stop=["<|im_end|>", "<|im_start|>"],
                 stream=True,
             ):
                 token_text = output["choices"][0]["text"]
@@ -331,6 +315,7 @@ class Local_Chat_Client(BaseLLMClient):
                 prompt,
                 max_tokens=self.max_tokens,
                 temperature=self.temperature,
+                stop=["<|im_end|>", "<|im_start|>"],
                 stream=False,
             )
             generated_text = output["choices"][0]["text"]
