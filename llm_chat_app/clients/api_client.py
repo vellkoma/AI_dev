@@ -136,6 +136,25 @@ class API_Chat_Client(BaseLLMClient):
             "max_tokens": self.max_tokens,
         }
 
+    def _is_temperature_deprecated(self) -> bool:
+        """現在のモデルでtemperatureパラメータが非対応かを判定する。
+
+        Claude Sonnet 5以降の新しいモデルはtemperatureを受け付けない。
+
+        Returns:
+            temperatureが非対応ならTrue
+        """
+        # temperatureを受け付けない既知のモデル
+        deprecated_models = {
+            "claude-sonnet-5",
+            "claude-fable-5",
+            "claude-mythos-5",
+            "claude-opus-4-8",
+            "claude-opus-4-7",
+            "claude-opus-4-6",
+        }
+        return self.model in deprecated_models
+
     # =========================================================================
     # OpenAI API実装
     # =========================================================================
@@ -422,9 +441,11 @@ class API_Chat_Client(BaseLLMClient):
         kwargs: Dict[str, Any] = {
             "model": self.model,
             "messages": formatted_messages,
-            "temperature": self.temperature,
             "max_tokens": self.max_tokens,
         }
+        # 新しいモデル（claude-sonnet-5等）はtemperatureを受け付けない
+        if not self._is_temperature_deprecated():
+            kwargs["temperature"] = self.temperature
         if system_message:
             kwargs["system"] = system_message
 
@@ -473,9 +494,11 @@ class API_Chat_Client(BaseLLMClient):
         kwargs: Dict[str, Any] = {
             "model": self.model,
             "messages": formatted_messages,
-            "temperature": self.temperature,
             "max_tokens": self.max_tokens,
         }
+        # 新しいモデル（claude-sonnet-5等）はtemperatureを受け付けない
+        if not self._is_temperature_deprecated():
+            kwargs["temperature"] = self.temperature
         if system_message:
             kwargs["system"] = system_message
 
