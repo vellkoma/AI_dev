@@ -81,8 +81,9 @@ python -m llm_chat_app.main --mode api --provider gemini
 # デフォルト（config.yamlの設定を使用）
 python -m llm_chat_app.main --mode local
 
-# モデルパスを指定して起動
-python -m llm_chat_app.main --mode local --model-path ./models/your-model.gguf
+# バックエンドを指定して起動
+python -m llm_chat_app.main --mode local --provider llama_cpp
+python -m llm_chat_app.main --mode local --provider ollama
 ```
 
 ### 主なコマンド
