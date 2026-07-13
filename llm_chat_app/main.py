@@ -199,7 +199,7 @@ def _create_api_client(args: argparse.Namespace, config):
         # コマンドラインでプロバイダーを切り替えた場合、モデルもデフォルトに変更
         default_models = {
             APIProvider.OPENAI: "gpt-3.5-turbo",
-            APIProvider.CLAUDE: "claude-3-haiku-20240307",
+            APIProvider.CLAUDE: "claude-sonnet-5",
             APIProvider.GEMINI: "gemini-pro",
         }
         model = default_models.get(provider, config.api_model)
