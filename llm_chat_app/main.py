@@ -247,8 +247,14 @@ def _create_local_client(args: argparse.Namespace, config):
             details=f"有効な値: {valid_backends}",
         )
 
-    # モデルパスの確認
-    if not config.local_model_path:
+    # モデルパスの決定
+    # Ollamaの場合はモデル名、llama_cppの場合はファイルパス
+    model_path = config.local_model_path
+    if backend == LocalModelBackend.OLLAMA:
+        # Ollamaはモデル名を使用（GGUFパスが設定されている場合はデフォルトに切り替え）
+        if model_path and model_path.endswith(".gguf"):
+            model_path = "qwen2.5:1.5b"  # Ollamaのデフォルトモデル名
+    elif not model_path:
         raise ConfigurationError(
             message="ローカルモデルのパスが設定されていません。",
             details="config.yaml の local.model_path を設定してください。",
@@ -256,7 +262,7 @@ def _create_local_client(args: argparse.Namespace, config):
 
     return Local_Chat_Client(
         backend=backend,
-        model_path=config.local_model_path,
+        model_path=model_path,
         n_ctx=config.local_n_ctx,
         n_gpu_layers=config.local_n_gpu_layers,
         temperature=config.temperature,
