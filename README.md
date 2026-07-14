@@ -51,8 +51,6 @@ LLM基礎    →    Web UI + RAG    →    AIエージェント   →    MLOps/L
 
 ## Phase 2: Web UI + RAG ダッシュボード 🔄
 
-> **ブランチ**: `feature/web-ui`
-
 既存CLI版を拡張し、プロフェッショナルなダッシュボード型Web UIとRAG機能を追加。
 
 ### 主な実装内容
@@ -160,26 +158,32 @@ AI_dev/
 ## 開発環境
 
 - **OS**: Windows
-- **Python**: 3.9+
+- **Python**: 3.9+（CIでは3.9/3.11でテスト）
 - **Node.js**: 18+ (フロントエンド)
 - **エディタ**: VS Code + Kiro
 - **バージョン管理**: Git / GitHub
+- **CI/CD**: GitHub Actions（pytest, mypy, black, flake8, isort）
 
 ## セットアップ
 
 ```bash
 # クローン
-git clone https://github.com/your-username/AI_dev.git
+git clone https://github.com/vellkoma/AI_dev.git
 cd AI_dev
 
 # Python仮想環境
 python -m venv .venv
 .venv\Scripts\activate
 
-# Phase 1 (CLI版)
+# Phase 1 (CLI版 - APIモード)
 pip install -r requirements.txt
 copy config.yaml.example config.yaml
 python -m llm_chat_app.main --mode api
+
+# Phase 1 (CLI版 - ローカルモデル)
+python -m llm_chat_app.main --mode local --provider ollama
+# ※ Ollamaの事前インストールとモデルのpullが必要
+# 詳細: docs/LOCAL_MODEL_SETUP.md
 
 # Phase 2 (Web UI + RAG)
 pip install -r backend/requirements.txt
