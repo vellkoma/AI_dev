@@ -614,7 +614,7 @@ class API_Chat_Client(BaseLLMClient):
 
     def _stream_gemini(
         self,
-        formatted_contents: List[Dict[str, Any]],
+        formatted_contents: List[Any],
         on_token: Optional[Callable[[str], None]],
         start_time: float,
     ) -> LLMResponse:
@@ -672,7 +672,7 @@ class API_Chat_Client(BaseLLMClient):
 
     def _non_stream_gemini(
         self,
-        formatted_contents: List[Dict[str, Any]],
+        formatted_contents: List[Any],
         start_time: float,
     ) -> LLMResponse:
         """Gemini APIの非ストリーミングレスポンスを処理する。

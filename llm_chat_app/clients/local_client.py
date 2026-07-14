@@ -381,7 +381,7 @@ class Local_Chat_Client(BaseLLMClient):
             {"role": msg.role, "content": msg.content} for msg in messages
         ]
 
-        payload = {
+        payload: Dict[str, Any] = {
             "model": self.model_path,
             "messages": ollama_messages,
             "stream": stream,
@@ -402,7 +402,7 @@ class Local_Chat_Client(BaseLLMClient):
                 generation_start = time.time()
                 response = requests.post(
                     f"{self.OLLAMA_BASE_URL}/api/chat",
-                    json=payload,
+                    json=payload,  # type: ignore[arg-type]
                     stream=True,
                     timeout=120,
                 )
@@ -429,7 +429,7 @@ class Local_Chat_Client(BaseLLMClient):
                 generation_start = time.time()
                 response = requests.post(
                     f"{self.OLLAMA_BASE_URL}/api/chat",
-                    json=payload,
+                    json=payload,  # type: ignore[arg-type]
                     timeout=120,
                 )
                 response.raise_for_status()

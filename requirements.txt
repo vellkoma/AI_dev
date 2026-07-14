@@ -18,6 +18,8 @@ hypothesis>=6.92.0
 
 # 型チェック
 mypy>=1.7.0
+types-PyYAML>=2024.1.1
+types-requests>=2.31.0
 
 # コード品質
 black>=23.12.0

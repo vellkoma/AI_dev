@@ -108,6 +108,10 @@ npm run dev
 | メインチャット | SSEストリーミングチャット（Markdownレンダリング対応） |
 | 統計パネル | 累積統計カード、モデル使用比率チャート、時系列グラフ |
 
+### スクリーンショット
+
+![LLM Chat Web UI](docs/images/chat-ui-screenshot.png)
+
 📁 バックエンド詳細: [`backend/README.md`](backend/README.md)
 📁 フロントエンド詳細: [`frontend/README.md`](frontend/README.md)
 

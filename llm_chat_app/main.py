@@ -12,7 +12,7 @@ from __future__ import annotations
 import argparse
 import sys
 import traceback
-from typing import Optional
+from typing import Any, Optional
 
 from llm_chat_app.clients.base import APIProvider, LocalModelBackend
 from llm_chat_app.exceptions import ChatAppError
@@ -142,7 +142,7 @@ def _resolve_api_key(provider: APIProvider, config_api_key: Optional[str]) -> Op
     return None
 
 
-def _create_api_client(args: argparse.Namespace, config):
+def _create_api_client(args: argparse.Namespace, config: Any) -> Any:
     """APIモードのLLMクライアントを生成する。
 
     Args:
@@ -213,7 +213,7 @@ def _create_api_client(args: argparse.Namespace, config):
     )
 
 
-def _create_local_client(args: argparse.Namespace, config):
+def _create_local_client(args: argparse.Namespace, config: Any) -> Any:
     """ローカルモードのLLMクライアントを生成する。
 
     Args:
