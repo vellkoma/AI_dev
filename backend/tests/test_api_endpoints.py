@@ -26,7 +26,6 @@ from backend.app.schemas.stats import (
     TimelineBucket,
 )
 
-
 # --- モックサービスのファクトリ ---
 
 
@@ -184,7 +183,9 @@ def mock_rag_service():
 
 
 @pytest.fixture
-def client(mock_llm_service, mock_session_service, mock_stats_service, mock_rag_service):
+def client(
+    mock_llm_service, mock_session_service, mock_stats_service, mock_rag_service
+):
     """モックサービスを注入したTestClientを提供する。"""
     app.dependency_overrides[get_llm_service] = lambda: mock_llm_service
     app.dependency_overrides[get_session_service] = lambda: mock_session_service

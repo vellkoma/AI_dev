@@ -128,9 +128,7 @@ class RAGService:
 
         # 埋め込み計算とChromaDBへの格納
         if chunks:
-            chunk_ids = [
-                f"{document_id}_chunk_{chunk.chunk_index}" for chunk in chunks
-            ]
+            chunk_ids = [f"{document_id}_chunk_{chunk.chunk_index}" for chunk in chunks]
             chunk_documents = [chunk.content for chunk in chunks]
             chunk_metadatas = [
                 {
@@ -142,9 +140,7 @@ class RAGService:
             ]
 
             # 埋め込みを計算して格納
-            embeddings = self._embedding_service.compute_embeddings(
-                chunk_documents
-            )
+            embeddings = self._embedding_service.compute_embeddings(chunk_documents)
             self._embedding_service.add_chunks(
                 ids=chunk_ids,
                 documents=chunk_documents,
@@ -190,9 +186,7 @@ class RAGService:
             類似度スコア降順でソートされた上位N件のChunkResult
         """
         if not self._embedding_available or self._embedding_service is None:
-            logger.warning(
-                "埋め込みモデルが利用できないため、検索できません。"
-            )
+            logger.warning("埋め込みモデルが利用できないため、検索できません。")
             return []
 
         k = top_k if top_k is not None else self.top_k
@@ -284,9 +278,7 @@ class RAGService:
         ]
 
         if len(metadata_list) == original_count:
-            raise ValueError(
-                f"ドキュメントが見つかりません: {document_id}"
-            )
+            raise ValueError(f"ドキュメントが見つかりません: {document_id}")
 
         self._save_metadata(metadata_list)
 
@@ -295,9 +287,7 @@ class RAGService:
             try:
                 self._embedding_service.delete_by_document_id(document_id)
             except Exception as e:
-                logger.error(
-                    f"ChromaDBからのチャンク削除に失敗しました: {e}"
-                )
+                logger.error(f"ChromaDBからのチャンク削除に失敗しました: {e}")
 
         logger.info(f"ドキュメントを削除しました: {document_id}")
 

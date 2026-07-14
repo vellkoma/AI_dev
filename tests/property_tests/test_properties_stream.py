@@ -22,7 +22,6 @@ from hypothesis import strategies as st
 
 from llm_chat_app.core.stream import Stream_Handler
 
-
 # ===== 戦略（Strategy）定義 =====
 
 # トークン文字列: 任意のUnicode文字列（空文字列を含む）
@@ -77,7 +76,7 @@ class TestStreamingTokenDisplay:
         assert stream_content.startswith(prefix)
 
         # プレフィックス以降の内容が全トークンの連結と一致する
-        token_content = stream_content[len(prefix):]
+        token_content = stream_content[len(prefix) :]
         expected = "".join(tokens)
         assert token_content == expected
 
@@ -90,9 +89,7 @@ class TestStreamingCompletion:
 
     @given(tokens=valid_token_list)
     @settings(max_examples=100, deadline=None)
-    def test_end_streaming_returns_concatenated_tokens(
-        self, tokens: list[str]
-    ) -> None:
+    def test_end_streaming_returns_concatenated_tokens(self, tokens: list[str]) -> None:
         """Property 2: start_streaming()の後、任意のトークンをon_token()で送信し、
         end_streaming()で返されるテキストがすべてのトークンを連結した文字列と一致する。
 

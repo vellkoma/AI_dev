@@ -21,7 +21,6 @@ from hypothesis import strategies as st
 from llm_chat_app.infrastructure.config import Config_Manager
 from llm_chat_app.models import AppConfig
 
-
 # ===== 戦略（Strategy）定義 =====
 
 # 有効なAPIプロバイダー
@@ -34,7 +33,9 @@ valid_backends = st.sampled_from(["llama_cpp", "ollama"])
 valid_log_levels = st.sampled_from(["DEBUG", "INFO", "WARNING", "ERROR"])
 
 # temperature: 0.0〜2.0の範囲
-valid_temperature = st.floats(min_value=0.0, max_value=2.0, allow_nan=False, allow_infinity=False)
+valid_temperature = st.floats(
+    min_value=0.0, max_value=2.0, allow_nan=False, allow_infinity=False
+)
 
 # max_tokens: 正の整数
 valid_max_tokens = st.integers(min_value=1, max_value=100000)
@@ -45,20 +46,14 @@ valid_history_max_tokens = st.integers(min_value=1, max_value=200000)
 # APIキー: $や{を含まない文字列（環境変数展開を避けるため）
 # 最低1文字の英数字文字列を生成
 valid_api_key = st.text(
-    alphabet=st.characters(
-        whitelist_categories=("L", "N"),
-        whitelist_characters="-_"
-    ),
+    alphabet=st.characters(whitelist_categories=("L", "N"), whitelist_characters="-_"),
     min_size=1,
     max_size=64,
 )
 
 # モデル名: 空でない英数字・ハイフン・ドット文字列
 valid_model_name = st.text(
-    alphabet=st.characters(
-        whitelist_categories=("L", "N"),
-        whitelist_characters="-_."
-    ),
+    alphabet=st.characters(whitelist_categories=("L", "N"), whitelist_characters="-_."),
     min_size=1,
     max_size=50,
 )
@@ -66,8 +61,7 @@ valid_model_name = st.text(
 # ローカルモデルパス: $や{を含まない文字列
 valid_model_path = st.text(
     alphabet=st.characters(
-        whitelist_categories=("L", "N"),
-        whitelist_characters="-_./\\"
+        whitelist_categories=("L", "N"), whitelist_characters="-_./\\"
     ),
     min_size=1,
     max_size=100,
@@ -85,8 +79,7 @@ valid_log_enabled = st.booleans()
 # ログファイルパス: $や{を含まない文字列
 valid_log_file = st.text(
     alphabet=st.characters(
-        whitelist_categories=("L", "N"),
-        whitelist_characters="-_./\\"
+        whitelist_categories=("L", "N"), whitelist_characters="-_./\\"
     ),
     min_size=1,
     max_size=50,

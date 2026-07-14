@@ -86,9 +86,7 @@ class TestUploadDocument:
         assert call_kwargs.kwargs["filename"] == "test.txt"
         assert call_kwargs.kwargs["content_type"] == "text/plain"
 
-    def test_upload_unsupported_format_returns_415(
-        self, client, mock_rag_service
-    ):
+    def test_upload_unsupported_format_returns_415(self, client, mock_rag_service):
         """サポート外形式でHTTP 415を返す。"""
         mock_rag_service.ingest_document.side_effect = UnsupportedFormatError(
             content_type="application/zip",
@@ -109,9 +107,7 @@ class TestUploadDocument:
         assert "supported_formats" in data["detail"]
         assert "application/pdf" in data["detail"]["supported_formats"]
 
-    def test_upload_embedding_unavailable_returns_503(
-        self, client, mock_rag_service
-    ):
+    def test_upload_embedding_unavailable_returns_503(self, client, mock_rag_service):
         """埋め込みモデル利用不可でHTTP 503を返す。"""
         mock_rag_service.ingest_document.side_effect = RuntimeError(
             "埋め込みモデルが利用できません"
@@ -130,9 +126,7 @@ class TestUploadDocument:
 class TestListDocuments:
     """GET /api/rag/documents のテスト。"""
 
-    def test_list_returns_documents(
-        self, client, mock_rag_service, sample_metadata
-    ):
+    def test_list_returns_documents(self, client, mock_rag_service, sample_metadata):
         """ドキュメント一覧を正しく返す。"""
         mock_rag_service.list_documents.return_value = [sample_metadata]
 
@@ -166,9 +160,7 @@ class TestDeleteDocument:
         response = client.delete("/api/rag/documents/test-doc-id-123")
 
         assert response.status_code == 204
-        mock_rag_service.delete_document.assert_called_once_with(
-            "test-doc-id-123"
-        )
+        mock_rag_service.delete_document.assert_called_once_with("test-doc-id-123")
 
     def test_delete_not_found_returns_404(self, client, mock_rag_service):
         """存在しないドキュメントでHTTP 404を返す。"""

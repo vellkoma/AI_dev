@@ -211,7 +211,5 @@ class ChatOrchestrator:
 
             # 推定コスト計算（簡易ヒューリスティック）
             # プロンプトトークン: $0.00003/token、完了トークン: $0.00006/token
-            estimated_cost = (prompt_tokens * 0.00003) + (
-                completion_tokens * 0.00006
-            )
+            estimated_cost = (prompt_tokens * 0.00003) + (completion_tokens * 0.00006)
             self._stats["estimated_cost"] += estimated_cost

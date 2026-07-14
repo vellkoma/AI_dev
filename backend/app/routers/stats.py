@@ -43,7 +43,9 @@ def get_stats_by_model(
 
 @router.get("/timeline", response_model=TimelineStatsResponse)
 def get_stats_timeline(
-    period: str = Query(default="daily", description="集計期間: daily, weekly, monthly"),
+    period: str = Query(
+        default="daily", description="集計期間: daily, weekly, monthly"
+    ),
     stats_service: StatsService = Depends(get_stats_service),
 ) -> TimelineStatsResponse:
     """時系列統計を取得する。

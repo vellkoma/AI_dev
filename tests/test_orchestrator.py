@@ -118,9 +118,7 @@ class TestSendMessage:
         assert messages[1].role == "assistant"
         assert messages[1].content == "こんにちは！"
 
-    def test_send_message_updates_stats(
-        self, orchestrator: ChatOrchestrator
-    ) -> None:
+    def test_send_message_updates_stats(self, orchestrator: ChatOrchestrator) -> None:
         """統計情報が更新されることを確認。"""
         orchestrator.send_message("テスト")
         stats = orchestrator.get_stats()
@@ -227,9 +225,7 @@ class TestGetModelInfo:
 class TestGetStats:
     """get_stats()のテスト。"""
 
-    def test_initial_stats_are_zero(
-        self, orchestrator: ChatOrchestrator
-    ) -> None:
+    def test_initial_stats_are_zero(self, orchestrator: ChatOrchestrator) -> None:
         """初期状態の統計がゼロであることを確認。"""
         stats = orchestrator.get_stats()
         assert stats["total_requests"] == 0
@@ -264,9 +260,7 @@ class TestGetStats:
 class TestUpdateStats:
     """_update_stats()のテスト。"""
 
-    def test_update_stats_with_none_usage(
-        self, orchestrator: ChatOrchestrator
-    ) -> None:
+    def test_update_stats_with_none_usage(self, orchestrator: ChatOrchestrator) -> None:
         """usageがNoneの場合でもエラーにならないことを確認。"""
         response = LLMResponse(
             content="テスト",

@@ -28,12 +28,14 @@ def _create_llama_cpp_client_with_mock():
     mock_model = MagicMock()
     mock_llama_cls.return_value = mock_model
 
-    with patch(
-        "llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True
-    ), patch("os.path.isfile", return_value=True), patch(
-        "llm_chat_app.clients.local_client.Llama",
-        mock_llama_cls,
-        create=True,
+    with (
+        patch("llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True),
+        patch("os.path.isfile", return_value=True),
+        patch(
+            "llm_chat_app.clients.local_client.Llama",
+            mock_llama_cls,
+            create=True,
+        ),
     ):
         client = Local_Chat_Client(
             backend=LocalModelBackend.LLAMA_CPP,
@@ -47,9 +49,7 @@ class TestLocalChatClientInitialization:
 
     def test_llama_cpp_model_file_not_found_raises_model_load_error(self):
         """存在しないモデルファイルパスでModelLoadErrorが発生することを確認。"""
-        with patch(
-            "llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True
-        ):
+        with patch("llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True):
             with pytest.raises(ModelLoadError) as exc_info:
                 Local_Chat_Client(
                     backend=LocalModelBackend.LLAMA_CPP,
@@ -59,9 +59,7 @@ class TestLocalChatClientInitialization:
 
     def test_llama_cpp_not_installed_raises_model_load_error(self):
         """llama-cpp-python未インストール時にModelLoadErrorが発生することを確認。"""
-        with patch(
-            "llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", False
-        ):
+        with patch("llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", False):
             with pytest.raises(ModelLoadError) as exc_info:
                 Local_Chat_Client(
                     backend=LocalModelBackend.LLAMA_CPP,
@@ -73,11 +71,12 @@ class TestLocalChatClientInitialization:
         """Ollamaサーバー接続失敗時にModelLoadErrorが発生することを確認。"""
         import requests
 
-        with patch(
-            "llm_chat_app.clients.local_client.REQUESTS_AVAILABLE", True
-        ), patch("llm_chat_app.clients.local_client.requests") as mock_requests:
-            mock_requests.get.side_effect = (
-                requests.exceptions.ConnectionError("Connection refused")
+        with (
+            patch("llm_chat_app.clients.local_client.REQUESTS_AVAILABLE", True),
+            patch("llm_chat_app.clients.local_client.requests") as mock_requests,
+        ):
+            mock_requests.get.side_effect = requests.exceptions.ConnectionError(
+                "Connection refused"
             )
             mock_requests.exceptions = requests.exceptions
 
@@ -90,9 +89,7 @@ class TestLocalChatClientInitialization:
 
     def test_ollama_requests_not_installed_raises_model_load_error(self):
         """requests未インストール時にModelLoadErrorが発生することを確認。"""
-        with patch(
-            "llm_chat_app.clients.local_client.REQUESTS_AVAILABLE", False
-        ):
+        with patch("llm_chat_app.clients.local_client.REQUESTS_AVAILABLE", False):
             with pytest.raises(ModelLoadError) as exc_info:
                 Local_Chat_Client(
                     backend=LocalModelBackend.OLLAMA,
@@ -107,9 +104,7 @@ class TestLocalChatClientFormatPrompt:
     def test_format_user_message(self):
         """ユーザーメッセージがChatML形式でフォーマットされることを確認。"""
         client, _ = _create_llama_cpp_client_with_mock()
-        messages = [
-            Message(role="user", content="こんにちは", timestamp=time.time())
-        ]
+        messages = [Message(role="user", content="こんにちは", timestamp=time.time())]
         result = client._format_prompt(messages)
         assert "<|im_start|>user" in result
         assert "こんにちは" in result
@@ -158,9 +153,7 @@ class TestLocalChatClientSendMessage:
             "usage": {"prompt_tokens": 10, "completion_tokens": 8},
         }
 
-        messages = [
-            Message(role="user", content="こんにちは", timestamp=time.time())
-        ]
+        messages = [Message(role="user", content="こんにちは", timestamp=time.time())]
         response = client.send_message(messages, stream=False)
 
         assert isinstance(response, LLMResponse)
@@ -180,9 +173,7 @@ class TestLocalChatClientSendMessage:
         ]
         mock_model.create_completion.return_value = iter(stream_chunks)
 
-        messages = [
-            Message(role="user", content="挨拶して", timestamp=time.time())
-        ]
+        messages = [Message(role="user", content="挨拶して", timestamp=time.time())]
         received_tokens = []
         response = client.send_message(
             messages, stream=True, on_token=lambda t: received_tokens.append(t)
@@ -204,9 +195,7 @@ class TestLocalChatClientSendMessage:
         ]
         mock_model.create_completion.return_value = iter(stream_chunks)
 
-        messages = [
-            Message(role="user", content="テスト", timestamp=time.time())
-        ]
+        messages = [Message(role="user", content="テスト", timestamp=time.time())]
         client.send_message(messages, stream=True)
 
         # tokens_per_secondが計測されている
@@ -220,9 +209,7 @@ class TestLocalChatClientSendMessage:
         # モデルを明示的にNoneに設定
         client._model = None
 
-        messages = [
-            Message(role="user", content="テスト", timestamp=time.time())
-        ]
+        messages = [Message(role="user", content="テスト", timestamp=time.time())]
         with pytest.raises(ModelLoadError) as exc_info:
             client.send_message(messages, stream=False)
         assert "初期化されていません" in exc_info.value.user_message
@@ -236,12 +223,14 @@ class TestLocalChatClientGetModelInfo:
         mock_llama_cls = MagicMock()
         mock_llama_cls.return_value = MagicMock()
 
-        with patch(
-            "llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True
-        ), patch("os.path.isfile", return_value=True), patch(
-            "llm_chat_app.clients.local_client.Llama",
-            mock_llama_cls,
-            create=True,
+        with (
+            patch("llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True),
+            patch("os.path.isfile", return_value=True),
+            patch(
+                "llm_chat_app.clients.local_client.Llama",
+                mock_llama_cls,
+                create=True,
+            ),
         ):
             client = Local_Chat_Client(
                 backend=LocalModelBackend.LLAMA_CPP,
@@ -282,12 +271,14 @@ class TestLocalChatClientMemoryError:
         mock_llama_cls = MagicMock()
         mock_llama_cls.side_effect = MemoryError("Out of memory")
 
-        with patch(
-            "llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True
-        ), patch("os.path.isfile", return_value=True), patch(
-            "llm_chat_app.clients.local_client.Llama",
-            mock_llama_cls,
-            create=True,
+        with (
+            patch("llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True),
+            patch("os.path.isfile", return_value=True),
+            patch(
+                "llm_chat_app.clients.local_client.Llama",
+                mock_llama_cls,
+                create=True,
+            ),
         ):
             with pytest.raises(ModelLoadError) as exc_info:
                 Local_Chat_Client(
@@ -301,12 +292,14 @@ class TestLocalChatClientMemoryError:
         mock_llama_cls = MagicMock()
         mock_llama_cls.side_effect = OSError("Insufficient memory")
 
-        with patch(
-            "llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True
-        ), patch("os.path.isfile", return_value=True), patch(
-            "llm_chat_app.clients.local_client.Llama",
-            mock_llama_cls,
-            create=True,
+        with (
+            patch("llm_chat_app.clients.local_client.LLAMA_CPP_AVAILABLE", True),
+            patch("os.path.isfile", return_value=True),
+            patch(
+                "llm_chat_app.clients.local_client.Llama",
+                mock_llama_cls,
+                create=True,
+            ),
         ):
             with pytest.raises(ModelLoadError) as exc_info:
                 Local_Chat_Client(

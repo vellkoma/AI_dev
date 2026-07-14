@@ -251,7 +251,9 @@ class TestTrimHistory:
     def test_システムメッセージはトリミングで保持される(self) -> None:
         """トリミング時にシステムメッセージ（role="system"）が保持されることを検証"""
         manager = History_Manager(max_tokens=10)
-        system_msg = Message(role="system", content="あなたはアシスタントです。" * 5, timestamp=1.0)
+        system_msg = Message(
+            role="system", content="あなたはアシスタントです。" * 5, timestamp=1.0
+        )
         user_msg = Message(role="user", content="x" * 200, timestamp=2.0)
         assistant_msg = Message(role="assistant", content="y" * 200, timestamp=3.0)
 

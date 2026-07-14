@@ -112,9 +112,7 @@ class History_Manager:
         path = Path(filepath)
 
         if not path.exists():
-            raise FileNotFoundError(
-                f"履歴ファイルが見つかりません: {filepath}"
-            )
+            raise FileNotFoundError(f"履歴ファイルが見つかりません: {filepath}")
 
         try:
             with open(path, "r", encoding="utf-8") as f:
@@ -143,7 +141,9 @@ class History_Manager:
         """
         estimated_tokens = self._estimate_tokens()
 
-        while estimated_tokens > self.max_tokens and len(self.conversation.messages) > 1:
+        while (
+            estimated_tokens > self.max_tokens and len(self.conversation.messages) > 1
+        ):
             # 削除対象のインデックスを探す（システムメッセージ以外で最も古いもの）
             removed = False
             for i, msg in enumerate(self.conversation.messages):

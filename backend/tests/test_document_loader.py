@@ -107,9 +107,7 @@ class TestDocumentLoader:
     def test_load_markdown_by_markdown_extension(self):
         """拡張子.markdownでMarkdownを読み込める。"""
         content = "**太字**テスト".encode("utf-8")
-        result = self.loader.load(
-            content, "doc.markdown", "application/octet-stream"
-        )
+        result = self.loader.load(content, "doc.markdown", "application/octet-stream")
         assert result == "**太字**テスト"
 
     # --- サポート外形式のエラーテスト ---
@@ -171,9 +169,7 @@ class TestDocumentLoader:
     def test_load_pdf_by_extension(self):
         """拡張子.pdfでPDFを読み込める（content_typeが不明な場合）。"""
         pdf_bytes = _create_simple_pdf("Extension test")
-        result = self.loader.load(
-            pdf_bytes, "test.pdf", "application/octet-stream"
-        )
+        result = self.loader.load(pdf_bytes, "test.pdf", "application/octet-stream")
         assert "Extension test" in result
 
 

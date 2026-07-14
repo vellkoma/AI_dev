@@ -34,7 +34,11 @@ class TestMessage:
 
     def test_from_dict(self) -> None:
         """from_dict()が辞書からMessageを正しく復元することを検証する"""
-        data = {"role": "system", "content": "あなたはAIアシスタントです", "timestamp": 999.0}
+        data = {
+            "role": "system",
+            "content": "あなたはAIアシスタントです",
+            "timestamp": 999.0,
+        }
         msg = Message.from_dict(data)
         assert msg.role == "system"
         assert msg.content == "あなたはAIアシスタントです"

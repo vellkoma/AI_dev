@@ -6,8 +6,8 @@ TextChunkerのサイズ制約とチャンク生成を検証する。
 
 import pytest
 
+from backend.app.rag.chunker import Chunk, TextChunker
 from backend.app.rag.document_loader import DocumentLoader, UnsupportedFormatError
-from backend.app.rag.chunker import TextChunker, Chunk
 
 
 class TestDocumentLoaderFormats:

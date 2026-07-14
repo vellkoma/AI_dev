@@ -151,9 +151,7 @@ async def _stream_chat_events(
                 collected_response += token_data
                 yield {
                     "event": "token",
-                    "data": json.dumps(
-                        {"token": token_data}, ensure_ascii=False
-                    ),
+                    "data": json.dumps({"token": token_data}, ensure_ascii=False),
                 }
 
             elif event_type == "done":
@@ -173,9 +171,7 @@ async def _stream_chat_events(
                 error_message = event.get("data", "不明なエラー")
                 yield {
                     "event": "error",
-                    "data": json.dumps(
-                        {"error": error_message}, ensure_ascii=False
-                    ),
+                    "data": json.dumps({"error": error_message}, ensure_ascii=False),
                 }
                 return  # エラー発生時はストリーム終了
 
@@ -224,9 +220,7 @@ async def _stream_chat_events(
             )
 
     except FileNotFoundError:
-        logger.warning(
-            f"セッションが見つかりません: {request.session_id}"
-        )
+        logger.warning(f"セッションが見つかりません: {request.session_id}")
     except Exception as e:
         logger.error(f"セッション更新エラー: {e}")
 

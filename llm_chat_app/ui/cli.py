@@ -175,7 +175,9 @@ class Chat_Interface:
         """
         print("\n利用可能なコマンド:")
         print("  /clear          - 会話履歴をクリア")
-        print("  /save [file]    - 会話履歴を保存（デフォルト: conversations/セッションID.json）")
+        print(
+            "  /save [file]    - 会話履歴を保存（デフォルト: conversations/セッションID.json）"
+        )
         print("  /load <file>    - 会話履歴を読み込み")
         print("  /stats          - パフォーマンス統計を表示")
         print("  /help           - このヘルプを表示")

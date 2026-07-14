@@ -96,7 +96,9 @@ class TestGetSession:
             session_id="sess-1",
             messages=[
                 Message(role="user", content="こんにちは", timestamp=now),
-                Message(role="assistant", content="はい、こんにちは！", timestamp=now + 1),
+                Message(
+                    role="assistant", content="はい、こんにちは！", timestamp=now + 1
+                ),
             ],
             created_at=now,
             updated_at=now + 1,

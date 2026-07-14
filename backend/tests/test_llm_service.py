@@ -43,9 +43,7 @@ def config_no_key():
 @pytest.fixture
 def service(config):
     """テスト用のLLMServiceインスタンスを提供する。"""
-    with patch(
-        "backend.app.services.llm_service.API_Chat_Client"
-    ) as mock_client_class:
+    with patch("backend.app.services.llm_service.API_Chat_Client") as mock_client_class:
         mock_client = MagicMock()
         mock_client_class.return_value = mock_client
         svc = LLMService(config)
@@ -168,9 +166,7 @@ class TestStreamResponse:
             mock_client_class.return_value = mock_client
 
             svc = LLMService(config)
-            messages = [
-                Message(role="user", content="Hi", timestamp=time.time())
-            ]
+            messages = [Message(role="user", content="Hi", timestamp=time.time())]
 
             events = []
             async for event in svc.stream_response(messages):
@@ -199,9 +195,7 @@ class TestStreamResponse:
             mock_client_class.return_value = mock_client
 
             svc = LLMService(config)
-            messages = [
-                Message(role="user", content="Hi", timestamp=time.time())
-            ]
+            messages = [Message(role="user", content="Hi", timestamp=time.time())]
 
             events = []
             async for event in svc.stream_response(messages):
@@ -222,9 +216,7 @@ class TestStreamResponse:
             mock_client_class.return_value = mock_client
 
             svc = LLMService(config)
-            messages = [
-                Message(role="user", content="Hi", timestamp=time.time())
-            ]
+            messages = [Message(role="user", content="Hi", timestamp=time.time())]
 
             events = []
             async for event in svc.stream_response(messages):
@@ -258,9 +250,7 @@ class TestStreamResponse:
             mock_client_class.return_value = mock_client
 
             svc = LLMService(config)
-            messages = [
-                Message(role="user", content="質問です", timestamp=time.time())
-            ]
+            messages = [Message(role="user", content="質問です", timestamp=time.time())]
 
             events = []
             async for event in svc.stream_response(

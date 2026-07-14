@@ -17,12 +17,11 @@ import time
 from pathlib import Path
 from typing import List
 
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 from llm_chat_app.core.history import History_Manager
 from llm_chat_app.models import Message
-
 
 # ===== 戦略（Strategy）定義 =====
 
@@ -162,9 +161,7 @@ class TestHistoryClear:
 
     @given(messages=message_list_strategy(min_size=1, max_size=10))
     @settings(max_examples=100, deadline=None)
-    def test_clear_history_returns_empty_list(
-        self, messages: List[Message]
-    ) -> None:
+    def test_clear_history_returns_empty_list(self, messages: List[Message]) -> None:
         """Property 4: 任意のメッセージを追加後にclear_history()するとget_messages()が空リストを返す。
 
         **Validates: Requirements 4.4**
@@ -198,9 +195,7 @@ class TestHistoryTokenTrimming:
 
     @given(data=system_and_non_system_messages_strategy())
     @settings(max_examples=100, deadline=None)
-    def test_token_limit_respected_after_trimming(
-        self, data: List[Message]
-    ) -> None:
+    def test_token_limit_respected_after_trimming(self, data: List[Message]) -> None:
         """Property 5: max_tokensを超過するメッセージ群を追加した場合、推定トークン数がmax_tokens以下に収まる。
 
         **Validates: Requirements 4.5**
@@ -228,9 +223,7 @@ class TestHistoryTokenTrimming:
 
         # 推定トークン数を計算
         remaining_messages = manager.get_messages()
-        estimated_tokens = sum(
-            len(msg.content) // 4 for msg in remaining_messages
-        )
+        estimated_tokens = sum(len(msg.content) // 4 for msg in remaining_messages)
 
         # 推定トークン数がmax_tokens以下であることを検証
         assert estimated_tokens <= max_tokens
@@ -259,9 +252,7 @@ class TestHistoryPersistenceRoundTrip:
 
     @given(messages=message_list_strategy(min_size=0, max_size=10))
     @settings(max_examples=100, deadline=None)
-    def test_save_and_load_preserves_messages(
-        self, messages: List[Message]
-    ) -> None:
+    def test_save_and_load_preserves_messages(self, messages: List[Message]) -> None:
         """Property 6: save_to_file()で保存した内容をload_from_file()で読み込むと、元のメッセージ内容と順序が完全に一致する。
 
         **Validates: Requirements 5.1, 5.2, 5.3**

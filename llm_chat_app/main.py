@@ -105,7 +105,9 @@ def main() -> None:
         sys.exit(1)
 
 
-def _resolve_api_key(provider: APIProvider, config_api_key: Optional[str]) -> Optional[str]:
+def _resolve_api_key(
+    provider: APIProvider, config_api_key: Optional[str]
+) -> Optional[str]:
     """プロバイダーに応じたAPIキーを解決する。
 
     以下の優先順位でAPIキーを取得する:

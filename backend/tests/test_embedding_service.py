@@ -4,9 +4,9 @@ ChromaDBとの統合テストを含む。
 sentence-transformersモデルはモックで代替する。
 """
 
-import tempfile
 import shutil
-from unittest.mock import patch, MagicMock
+import tempfile
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
@@ -26,9 +26,11 @@ def temp_dir():
 def mock_model():
     """sentence-transformersモデルのモックを返す。"""
     model = MagicMock()
+
     # encode()が呼ばれたら、テキスト数 x 384次元のダミー埋め込みを返す
     def fake_encode(texts, convert_to_numpy=True):
         return np.random.rand(len(texts), 384).astype(np.float32)
+
     model.encode = MagicMock(side_effect=fake_encode)
     return model
 
