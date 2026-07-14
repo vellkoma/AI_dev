@@ -184,9 +184,7 @@ class Local_Chat_Client(BaseLLMClient):
 
         try:
             # Ollamaサーバーの稼働確認
-            response = requests.get(
-                f"{self.OLLAMA_BASE_URL}/api/tags", timeout=5
-            )
+            response = requests.get(f"{self.OLLAMA_BASE_URL}/api/tags", timeout=5)
             response.raise_for_status()
             logger.info("Ollamaサーバーに接続しました: %s", self.OLLAMA_BASE_URL)
         except requests.exceptions.ConnectionError:
@@ -223,9 +221,7 @@ class Local_Chat_Client(BaseLLMClient):
         formatted_parts: List[str] = []
 
         for msg in messages:
-            formatted_parts.append(
-                f"<|im_start|>{msg.role}\n{msg.content}<|im_end|>"
-            )
+            formatted_parts.append(f"<|im_start|>{msg.role}\n{msg.content}<|im_end|>")
 
         # アシスタントの応答開始トークンを追加
         formatted_parts.append("<|im_start|>assistant\n")
@@ -381,7 +377,7 @@ class Local_Chat_Client(BaseLLMClient):
             {"role": msg.role, "content": msg.content} for msg in messages
         ]
 
-        payload = {
+        payload: Dict[str, Any] = {
             "model": self.model_path,
             "messages": ollama_messages,
             "stream": stream,
@@ -402,7 +398,7 @@ class Local_Chat_Client(BaseLLMClient):
                 generation_start = time.time()
                 response = requests.post(
                     f"{self.OLLAMA_BASE_URL}/api/chat",
-                    json=payload,
+                    json=payload,  # type: ignore[arg-type]
                     stream=True,
                     timeout=120,
                 )
@@ -429,7 +425,7 @@ class Local_Chat_Client(BaseLLMClient):
                 generation_start = time.time()
                 response = requests.post(
                     f"{self.OLLAMA_BASE_URL}/api/chat",
-                    json=payload,
+                    json=payload,  # type: ignore[arg-type]
                     timeout=120,
                 )
                 response.raise_for_status()

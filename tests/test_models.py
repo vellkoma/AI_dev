@@ -7,8 +7,6 @@ Message, LLMResponse, Conversation, AppConfigデータクラスの
 
 from __future__ import annotations
 
-import time
-
 from llm_chat_app.models import AppConfig, Conversation, LLMResponse, Message
 
 
@@ -34,7 +32,11 @@ class TestMessage:
 
     def test_from_dict(self) -> None:
         """from_dict()が辞書からMessageを正しく復元することを検証する"""
-        data = {"role": "system", "content": "あなたはAIアシスタントです", "timestamp": 999.0}
+        data = {
+            "role": "system",
+            "content": "あなたはAIアシスタントです",
+            "timestamp": 999.0,
+        }
         msg = Message.from_dict(data)
         assert msg.role == "system"
         assert msg.content == "あなたはAIアシスタントです"

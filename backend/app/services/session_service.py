@@ -10,8 +10,8 @@ import uuid
 from pathlib import Path
 from typing import List, Optional, Union
 
-from llm_chat_app.models import Conversation, Message
 from backend.app.schemas.history import SessionSummary
+from llm_chat_app.models import Conversation, Message
 
 
 class SessionService:
@@ -54,9 +54,7 @@ class SessionService:
         """
         path = self._session_path(session_id)
         if not path.exists():
-            raise FileNotFoundError(
-                f"セッションが見つかりません: {session_id}"
-            )
+            raise FileNotFoundError(f"セッションが見つかりません: {session_id}")
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
         return Conversation.from_dict(data)
@@ -162,9 +160,7 @@ class SessionService:
         """
         path = self._session_path(session_id)
         if not path.exists():
-            raise FileNotFoundError(
-                f"セッションが見つかりません: {session_id}"
-            )
+            raise FileNotFoundError(f"セッションが見つかりません: {session_id}")
         path.unlink()
 
     def search_sessions(self, keyword: str) -> List[SessionSummary]:

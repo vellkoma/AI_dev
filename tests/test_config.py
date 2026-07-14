@@ -6,10 +6,6 @@
 
 from __future__ import annotations
 
-import os
-import tempfile
-from pathlib import Path
-
 import pytest
 import yaml
 
@@ -293,7 +289,9 @@ class TestValidateConfig:
     def test_invalid_backend_raises_error(self):
         """不正なバックエンドでConfigurationErrorが送出されることを確認。"""
         mgr = Config_Manager()
-        with pytest.raises(ConfigurationError, match="不正なローカルモデルバックエンド"):
+        with pytest.raises(
+            ConfigurationError, match="不正なローカルモデルバックエンド"
+        ):
             mgr._validate_config(
                 {
                     "api": {"provider": "openai", "model": "gpt-4"},

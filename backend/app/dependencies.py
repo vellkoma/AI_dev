@@ -94,7 +94,5 @@ def get_stats_service():
 
     if not hasattr(get_stats_service, "_instance"):
         config = get_config()
-        get_stats_service._instance = StatsService(
-            storage_path=Path(config.stats_file)
-        )
+        get_stats_service._instance = StatsService(storage_path=Path(config.stats_file))
     return get_stats_service._instance

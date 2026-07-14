@@ -56,7 +56,9 @@ class TestParseArgs:
     def test_全オプション指定(self):
         """すべてのオプションを同時に指定した場合。"""
         with patch.object(
-            sys, "argv", ["main", "--mode", "local", "--config", "my.yaml", "--provider", "ollama"]
+            sys,
+            "argv",
+            ["main", "--mode", "local", "--config", "my.yaml", "--provider", "ollama"],
         ):
             args = parse_args()
             assert args.mode == "local"

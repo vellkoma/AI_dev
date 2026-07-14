@@ -54,8 +54,7 @@ def get_session(
 
     # ConversationのメッセージをChatMessageスキーマに変換
     messages = [
-        ChatMessage(role=msg.role, content=msg.content)
-        for msg in conversation.messages
+        ChatMessage(role=msg.role, content=msg.content) for msg in conversation.messages
     ]
 
     return SessionDetailResponse(

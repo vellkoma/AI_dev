@@ -99,9 +99,7 @@ class TestIngestDocument:
         assert len(data) == 1
         assert data[0]["filename"] == "meta_test.txt"
 
-    def test_ingest_calls_embedding_service(
-        self, rag_service, mock_embedding_service
-    ):
+    def test_ingest_calls_embedding_service(self, rag_service, mock_embedding_service):
         """取り込み時にEmbeddingServiceが呼ばれる。"""
         content = b"Some text to embed."
         rag_service.ingest_document(content, "embed.txt", "text/plain")
@@ -154,9 +152,7 @@ class TestSearchRelevantChunks:
         assert results[0].score == pytest.approx(0.9, abs=0.01)
         assert results[1].score == pytest.approx(0.7, abs=0.01)
 
-    def test_search_with_custom_top_k(
-        self, rag_service, mock_embedding_service
-    ):
+    def test_search_with_custom_top_k(self, rag_service, mock_embedding_service):
         """カスタムtop_kが検索に使用される。"""
         rag_service.search_relevant_chunks("query", top_k=3)
         mock_embedding_service.search.assert_called_with(query="query", top_k=3)
@@ -240,9 +236,7 @@ class TestBuildRagContext:
 class TestDeleteDocument:
     """delete_documentメソッドのテスト。"""
 
-    def test_delete_existing_document(
-        self, rag_service, mock_embedding_service
-    ):
+    def test_delete_existing_document(self, rag_service, mock_embedding_service):
         """既存ドキュメントが正常に削除される。"""
         # まずドキュメントを追加
         result = rag_service.ingest_document(

@@ -186,9 +186,7 @@ class API_Chat_Client(BaseLLMClient):
                 start_time = time.time()
 
                 if stream:
-                    return self._stream_openai(
-                        formatted_messages, on_token, start_time
-                    )
+                    return self._stream_openai(formatted_messages, on_token, start_time)
                 else:
                     return self._non_stream_openai(formatted_messages, start_time)
 
@@ -231,9 +229,7 @@ class API_Chat_Client(BaseLLMClient):
                             time.sleep(delay)
                             continue
                         else:
-                            logger.error(
-                                f"OpenAIレート制限: リトライ上限到達: {e}"
-                            )
+                            logger.error(f"OpenAIレート制限: リトライ上限到達: {e}")
                             raise RateLimitError(details=str(e))
                 logger.error(f"OpenAI APIエラー: {e}")
                 raise NetworkError(details=str(e))
@@ -350,9 +346,7 @@ class API_Chat_Client(BaseLLMClient):
             if msg.role == "system":
                 system_message = msg.content
             else:
-                formatted_messages.append(
-                    {"role": msg.role, "content": msg.content}
-                )
+                formatted_messages.append({"role": msg.role, "content": msg.content})
 
         for attempt in range(MAX_RETRIES + 1):
             try:
@@ -405,9 +399,7 @@ class API_Chat_Client(BaseLLMClient):
                         time.sleep(delay)
                         continue
                     else:
-                        logger.error(
-                            f"Claudeレート制限: リトライ上限到達: {e}"
-                        )
+                        logger.error(f"Claudeレート制限: リトライ上限到達: {e}")
                         raise RateLimitError(details=str(e))
                 logger.error(f"Claude APIエラー: {e}")
                 raise NetworkError(details=str(e))
@@ -578,19 +570,25 @@ class API_Chat_Client(BaseLLMClient):
                 start_time = time.time()
 
                 if stream:
-                    return self._stream_gemini(
-                        formatted_contents, on_token, start_time
-                    )
+                    return self._stream_gemini(formatted_contents, on_token, start_time)
                 else:
                     return self._non_stream_gemini(formatted_contents, start_time)
 
             except Exception as e:
                 error_str = str(e).lower()
                 # エラー内容から適切な例外に変換
-                if "401" in error_str or "unauthenticated" in error_str or "permission" in error_str:
+                if (
+                    "401" in error_str
+                    or "unauthenticated" in error_str
+                    or "permission" in error_str
+                ):
                     logger.error(f"Gemini認証エラー: {e}")
                     raise AuthenticationError(details=str(e))
-                elif "429" in error_str or "resource_exhausted" in error_str or "quota" in error_str:
+                elif (
+                    "429" in error_str
+                    or "resource_exhausted" in error_str
+                    or "quota" in error_str
+                ):
                     if attempt < MAX_RETRIES:
                         delay = BASE_DELAY_SECONDS * (2**attempt)
                         logger.warning(
@@ -602,7 +600,11 @@ class API_Chat_Client(BaseLLMClient):
                     else:
                         logger.error(f"Geminiレート制限: リトライ上限到達: {e}")
                         raise RateLimitError(details=str(e))
-                elif "unavailable" in error_str or "timeout" in error_str or "connection" in error_str:
+                elif (
+                    "unavailable" in error_str
+                    or "timeout" in error_str
+                    or "connection" in error_str
+                ):
                     logger.error(f"Geminiネットワークエラー: {e}")
                     raise NetworkError(details=str(e))
                 else:
@@ -614,7 +616,7 @@ class API_Chat_Client(BaseLLMClient):
 
     def _stream_gemini(
         self,
-        formatted_contents: List[Dict[str, Any]],
+        formatted_contents: List[Any],
         on_token: Optional[Callable[[str], None]],
         start_time: float,
     ) -> LLMResponse:
@@ -655,9 +657,7 @@ class API_Chat_Client(BaseLLMClient):
         usage = None
         if hasattr(chunk, "usage_metadata") and chunk.usage_metadata:
             usage = {
-                "prompt_tokens": getattr(
-                    chunk.usage_metadata, "prompt_token_count", 0
-                ),
+                "prompt_tokens": getattr(chunk.usage_metadata, "prompt_token_count", 0),
                 "completion_tokens": getattr(
                     chunk.usage_metadata, "candidates_token_count", 0
                 ),
@@ -672,7 +672,7 @@ class API_Chat_Client(BaseLLMClient):
 
     def _non_stream_gemini(
         self,
-        formatted_contents: List[Dict[str, Any]],
+        formatted_contents: List[Any],
         start_time: float,
     ) -> LLMResponse:
         """Gemini APIの非ストリーミングレスポンスを処理する。

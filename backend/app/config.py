@@ -61,9 +61,7 @@ class BackendConfig:
         return cls(
             host=os.getenv("BACKEND_HOST", "0.0.0.0"),
             port=int(os.getenv("BACKEND_PORT", "8000")),
-            cors_origins=os.getenv(
-                "CORS_ORIGINS", "http://localhost:3000"
-            ).split(","),
+            cors_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000").split(","),
             default_provider=os.getenv("DEFAULT_PROVIDER", "openai"),
             default_model=os.getenv("DEFAULT_MODEL", "gpt-3.5-turbo"),
             api_key=(

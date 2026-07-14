@@ -2,7 +2,6 @@
 
 import logging
 import os
-import tempfile
 
 import pytest
 
@@ -81,7 +80,9 @@ class TestSetupLogger:
         log_file = str(tmp_path / "test.log")
         logger = setup_logger(name="test_console_handler", log_file=log_file)
         stream_handlers = [
-            h for h in logger.handlers if isinstance(h, logging.StreamHandler)
+            h
+            for h in logger.handlers
+            if isinstance(h, logging.StreamHandler)
             and not isinstance(h, logging.handlers.RotatingFileHandler)
         ]
         assert len(stream_handlers) == 1
@@ -91,7 +92,9 @@ class TestSetupLogger:
         log_file = str(tmp_path / "test.log")
         logger = setup_logger(name="test_console_level", log_file=log_file)
         stream_handlers = [
-            h for h in logger.handlers if isinstance(h, logging.StreamHandler)
+            h
+            for h in logger.handlers
+            if isinstance(h, logging.StreamHandler)
             and not isinstance(h, logging.handlers.RotatingFileHandler)
         ]
         assert stream_handlers[0].level == logging.WARNING

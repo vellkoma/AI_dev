@@ -25,7 +25,9 @@ class ChatAppError(Exception):
     """
 
     default_message: str = "アプリケーションでエラーが発生しました。"
-    guidance: str = "アプリケーションを再起動してください。問題が続く場合はログを確認してください。"
+    guidance: str = (
+        "アプリケーションを再起動してください。問題が続く場合はログを確認してください。"
+    )
 
     def __init__(
         self,

@@ -3,14 +3,14 @@
 CRUD操作、検索、ソートの正当性を検証する。
 """
 
-import time
 import tempfile
+import time
 from pathlib import Path
 
 import pytest
 
-from llm_chat_app.models import Conversation, Message
 from backend.app.services.session_service import SessionService
+from llm_chat_app.models import Conversation, Message
 
 
 @pytest.fixture
@@ -109,9 +109,7 @@ class TestUpdateSession:
     def test_update_model_name(self, service):
         """model_nameを更新できる。"""
         created = service.create_session(model_name="gpt-3.5-turbo")
-        service.update_session(
-            created.session_id, [], model_name="gpt-4"
-        )
+        service.update_session(created.session_id, [], model_name="gpt-4")
 
         retrieved = service.get_session(created.session_id)
         assert retrieved.model_name == "gpt-4"
@@ -206,7 +204,11 @@ class TestSearchSessions:
         s1 = service.create_session()
         service.update_session(
             s1.session_id,
-            [Message(role="user", content="Pythonについて教えて", timestamp=time.time())],
+            [
+                Message(
+                    role="user", content="Pythonについて教えて", timestamp=time.time()
+                )
+            ],
         )
 
         s2 = service.create_session()
@@ -277,7 +279,11 @@ class TestSearchSessions:
             s1.session_id,
             [
                 Message(role="user", content="質問", timestamp=time.time()),
-                Message(role="assistant", content="回答にPythonを使います", timestamp=time.time()),
+                Message(
+                    role="assistant",
+                    content="回答にPythonを使います",
+                    timestamp=time.time(),
+                ),
             ],
         )
 
