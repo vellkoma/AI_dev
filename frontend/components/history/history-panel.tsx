@@ -31,7 +31,7 @@ export function HistoryPanel({
     setLoading(true);
     try {
       const data = await api.history.list();
-      setSessions(data);
+      setSessions(data.sessions ?? []);
     } catch (error) {
       console.error("セッション一覧の取得に失敗しました:", error);
     } finally {
@@ -50,7 +50,7 @@ export function HistoryPanel({
       setLoading(true);
       try {
         const data = await api.history.list();
-        setSessions(data);
+        setSessions(data.sessions ?? []);
       } catch (error) {
         console.error("セッション一覧の取得に失敗しました:", error);
       } finally {
@@ -62,7 +62,7 @@ export function HistoryPanel({
     setLoading(true);
     try {
       const data = await api.history.search(keyword);
-      setSessions(data);
+      setSessions(data.sessions ?? []);
     } catch (error) {
       console.error("検索に失敗しました:", error);
     } finally {
