@@ -13,7 +13,7 @@ import json
 import time
 import uuid
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 from llm_chat_app.exceptions import FileFormatError
 from llm_chat_app.models import Conversation, Message

@@ -7,8 +7,6 @@ Message, LLMResponse, Conversation, AppConfigデータクラスの
 
 from __future__ import annotations
 
-import time
-
 from llm_chat_app.models import AppConfig, Conversation, LLMResponse, Message
 
 

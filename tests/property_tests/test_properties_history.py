@@ -13,7 +13,6 @@ Property 6: 会話履歴の永続化ラウンドトリップ
 from __future__ import annotations
 
 import tempfile
-import time
 from pathlib import Path
 from typing import List
 
@@ -253,7 +252,8 @@ class TestHistoryPersistenceRoundTrip:
     @given(messages=message_list_strategy(min_size=0, max_size=10))
     @settings(max_examples=100, deadline=None)
     def test_save_and_load_preserves_messages(self, messages: List[Message]) -> None:
-        """Property 6: save_to_file()で保存した内容をload_from_file()で読み込むと、元のメッセージ内容と順序が完全に一致する。
+        """Property 6: save_to_file()で保存した内容をload_from_file()で読み込むと、
+        元のメッセージ内容と順序が完全に一致する。
 
         **Validates: Requirements 5.1, 5.2, 5.3**
 
