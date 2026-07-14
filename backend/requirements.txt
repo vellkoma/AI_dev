@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sse-starlette
+pydantic
+chromadb
+langchain
+langchain-text-splitters
+sentence-transformers
+python-multipart
+PyPDF2
+pytest
+pytest-asyncio
+httpx
+hypothesis

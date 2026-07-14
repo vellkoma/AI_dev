@@ -1,188 +1,192 @@
-# LLM Chat App
+# AI Development Portfolio
 
-LLM API入門ポートフォリオプロジェクト — 商用APIとローカルモデルの2つのアプローチによるチャットアプリケーション
+AI技術の実践的な学習と開発スキルの体系化を目的としたポートフォリオリポジトリ
 
-## プロジェクト概要
+## このリポジトリについて
 
-本プロジェクトは、LLM（大規模言語モデル）技術の基礎を習得するためのチャットアプリケーションです。以下の2つの異なるアプローチでLLMチャットを実装し、それぞれの特性を比較・学習できます。
+現在、社内SEとして就業しながら、モダン開発スキルを活かして**AI領域のソフトウェア開発者**へのキャリア転換を目指しています。本リポジトリは、LLMアプリケーション開発からMLOps/AIインフラまでを段階的に学習・実装し、その過程と成果物を公開するものです。
 
-1. **API_Chat_Client**: 商用LLM API（OpenAI / Claude / Gemini）を使用するアプローチ
-2. **Local_Chat_Client**: オープンソースLLMモデルをローカルで実行するアプローチ
+## 学習ロードマップ
 
-## 機能一覧
+```
+Phase 1          Phase 2              Phase 3              Phase 4
+LLM基礎    →    Web UI + RAG    →    AIエージェント   →    MLOps/AIインフラ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ 完了          🔄 開発中             📋 計画中             📋 計画中
+```
 
-| 機能 | 説明 |
-|------|------|
-| 商用API対応 | OpenAI、Claude、Gemini の3つのAPIプロバイダーに対応 |
-| ローカルモデル対応 | llama-cpp-python / Ollama によるローカルLLM実行 |
-| ストリーミング表示 | レスポンスをリアルタイムに逐次表示 |
-| 会話履歴管理 | メモリ内の会話履歴保持・トークン制限による自動削減 |
-| 会話の永続化 | JSON形式での会話履歴の保存・読み込み |
-| パフォーマンス統計 | 応答時間、トークン数、推定コストの表示 |
-| 設定管理 | YAML形式の設定ファイルによる柔軟な設定 |
-| ログ機能 | API呼び出し、エラー、パフォーマンス指標のログ記録 |
+| Phase | テーマ | 内容 | 状態 |
+|-------|--------|------|------|
+| 1 | LLM Chat App (CLI) | 商用API + ローカルモデルによるチャットアプリ | ✅ 完了 |
+| 2 | Web UI + RAG | FastAPI + Next.js ダッシュボード、ドキュメント検索拡張 | 🔄 開発中 |
+| 3 | AIエージェント | 情報収集・タスク自動化エージェントの構築 | 📋 計画中 |
+| 4 | MLOps / AIインフラ | モデルデプロイ、ファインチューニング、推論最適化、Vision | 📋 計画中 |
 
-## 技術スタック
+---
 
-- **言語**: Python 3.9+
-- **LLM API SDK**:
-  - OpenAI Python SDK (`openai>=1.0.0`)
-  - Anthropic Python SDK (`anthropic>=0.7.0`)
-  - Google Generative AI SDK (`google-generativeai>=0.3.0`)
-- **ローカルモデル実行**: `llama-cpp-python>=0.2.0`
-- **設定管理**: `pyyaml>=6.0`
-- **テスト**: pytest, pytest-mock, hypothesis
-- **コード品質**: black, flake8, isort, mypy
+## Phase 1: LLM Chat App (CLI版) ✅
 
-## クイックスタート
+> **タグ**: `v1.0-cli-complete`
+
+商用LLM APIとローカルモデルの2つのアプローチでチャットアプリを実装し、LLM技術の基礎を習得。
+
+### 主な実装内容
+
+- OpenAI / Claude / Gemini の3プロバイダー対応
+- llama-cpp-python によるローカルLLM実行
+- リアルタイムストリーミング表示
+- 会話履歴管理（メモリ + JSON永続化）
+- YAML設定管理、ログ機能、パフォーマンス統計
+
+### 学んだこと
+
+- LLM APIの共通インターフェース設計（ストラテジーパターン）
+- ストリーミングレスポンスの処理パターン
+- トークン制限を考慮した会話履歴管理
+- プロパティベーステスト（Hypothesis）によるコード品質担保
+
+📁 詳細: [`llm_chat_app/README.md`](llm_chat_app/README.md)
+
+---
+
+## Phase 2: Web UI + RAG ダッシュボード 🔄
+
+> **ブランチ**: `feature/web-ui`
+
+既存CLI版を拡張し、プロフェッショナルなダッシュボード型Web UIとRAG機能を追加。
+
+### 主な実装内容
+
+- **FastAPI バックエンド**: SSEストリーミング、モデル管理API、統計API
+- **Next.js フロントエンド**: shadcn/ui ダッシュボード、リアルタイムチャットUI
+- **RAG エンジン**: PDF/テキスト/Markdownのドキュメント検索拡張
+- **統計ダッシュボード**: トークン使用量、コスト可視化
+
+### 技術スタック
+
+| レイヤー | 技術 |
+|---------|------|
+| バックエンド | Python, FastAPI, sse-starlette, LangChain |
+| フロントエンド | Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui |
+| RAG | ChromaDB, sentence-transformers |
+| グラフ | recharts |
+
+### セットアップ手順
 
 ```bash
-# リポジトリのクローン
-git clone https://github.com/your-username/llm-chat-app.git
-cd llm-chat-app
-
-# 仮想環境の作成と有効化
+# 1. バックエンド起動
 python -m venv .venv
-.venv\Scripts\activate  # Windows
+.venv\Scripts\activate
+pip install -r backend/requirements.txt
 
-# 依存関係のインストール
-pip install -r requirements.txt
+# 環境変数を設定（APIキー等）
+set OPENAI_API_KEY=your-api-key
 
-# 設定ファイルの作成
-copy config.yaml.example config.yaml
-# config.yaml を編集してAPI_Keyを設定
+# サーバー起動
+uvicorn backend.app.main:app --reload --port 8000
 
-# アプリケーションの起動（APIモード）
-python -m llm_chat_app.main --mode api
-
-# アプリケーションの起動（ローカルモデルモード）
-python -m llm_chat_app.main --mode local
+# 2. フロントエンド起動（別ターミナル）
+cd frontend
+npm install
+echo NEXT_PUBLIC_API_URL=http://localhost:8000 > .env.local
+npm run dev
 ```
 
-詳細なセットアップ手順は [docs/SETUP.md](docs/SETUP.md) を参照してください。
+### 使用方法
 
-## 使用方法
+1. **チャット**: メイン画面でメッセージを入力し、SSEストリーミングでリアルタイム応答を確認
+2. **モデル切り替え**: サイドバーのドロップダウンからOpenAI / Claude / Geminiを選択
+3. **RAGモード**: サイドバーでRAGトグルをONにし、ドキュメントをアップロード。チャット時にドキュメント内容を参照した回答を生成
+4. **統計確認**: 統計パネルでトークン使用量、コスト、時系列グラフを確認
+5. **会話履歴**: 履歴パネルからセッションを選択して再開、キーワード検索で過去の会話を検索
 
-### APIモードでの起動
+### 画面構成
 
-```bash
-# デフォルト（config.yamlの設定を使用）
-python -m llm_chat_app.main --mode api
+| エリア | 説明 |
+|--------|------|
+| サイドバー | モデル選択、RAGトグル、ドキュメント一覧、会話履歴 |
+| メインチャット | SSEストリーミングチャット（Markdownレンダリング対応） |
+| 統計パネル | 累積統計カード、モデル使用比率チャート、時系列グラフ |
 
-# プロバイダーを指定して起動
-python -m llm_chat_app.main --mode api --provider openai
-python -m llm_chat_app.main --mode api --provider claude
-python -m llm_chat_app.main --mode api --provider gemini
-```
+📁 バックエンド詳細: [`backend/README.md`](backend/README.md)
+📁 フロントエンド詳細: [`frontend/README.md`](frontend/README.md)
 
-### ローカルモードでの起動
+---
 
-```bash
-# デフォルト（config.yamlの設定を使用）
-python -m llm_chat_app.main --mode local
+## Phase 3: AIエージェント 📋
 
-# バックエンドを指定して起動
-python -m llm_chat_app.main --mode local --provider llama_cpp
-python -m llm_chat_app.main --mode local --provider ollama
-```
+タスク自動化や情報収集を行うAIエージェントの構築を予定。
 
-### 主なコマンド
+### 想定する内容
 
-チャット中に使用できるコマンド一覧：
+- LLMを活用したツール呼び出し（Function Calling）
+- 情報収集エージェント（Web検索 + 要約）
+- タスク自動化（マルチステップ推論）
+- Phase 2のバックエンドを拡張する形で実装
 
-| コマンド | 説明 |
-|----------|------|
-| `/clear` | 会話履歴をクリア |
-| `/save [ファイル名]` | 会話履歴をJSONファイルに保存 |
-| `/load <ファイル名>` | 保存済みの会話履歴を読み込み |
-| `/stats` | パフォーマンス統計（応答時間、トークン数、推定コスト）を表示 |
-| `/help` | 利用可能なコマンド一覧を表示 |
-| `/exit` | アプリケーションを終了 |
+---
+
+## Phase 4: MLOps / AIインフラ 📋
+
+AI/MLの本格的な運用基盤とモデル開発の深い領域に踏み込む予定。
+
+### 想定する内容
+
+- モデルサービング・デプロイパイプライン
+- ファインチューニング（LoRA / QLoRA）
+- 推論最適化（量子化、バッチ推論）
+- Vision系モデルの活用
+- Docker / コンテナ化されたML環境
+
+---
 
 ## プロジェクト構造
 
 ```
-llm-chat-app/
-├── llm_chat_app/            # メインパッケージ
-│   ├── __init__.py
-│   ├── main.py              # エントリーポイント
-│   ├── models.py            # データモデル（Message, LLMResponse, Conversation）
-│   ├── exceptions.py        # カスタム例外クラス
-│   ├── clients/             # LLMクライアント実装
-│   │   ├── __init__.py
-│   │   ├── base.py          # BaseLLMClient（抽象基底クラス）
-│   │   ├── api_client.py    # API_Chat_Client
-│   │   └── local_client.py  # Local_Chat_Client
-│   ├── core/                # コア機能
-│   │   ├── __init__.py
-│   │   ├── history.py       # History_Manager
-│   │   └── stream.py        # Stream_Handler
-│   ├── infrastructure/      # インフラ層
-│   │   ├── __init__.py
-│   │   ├── config.py        # Config_Manager
-│   │   └── logger.py        # ロガー設定
-│   └── ui/                  # ユーザーインターフェース
-│       ├── __init__.py
-│       └── chat_interface.py # Chat_Interface（CLI）
-├── tests/                   # テスト
-│   ├── __init__.py
-│   ├── test_config.py
-│   ├── test_history.py
-│   ├── test_stream.py
-│   └── property_tests/      # プロパティベーステスト
-├── docs/                    # ドキュメント
-│   ├── API_SETUP.md         # API_Key設定ガイド
-│   ├── LOCAL_MODEL_SETUP.md # ローカルモデルセットアップガイド
-│   └── SETUP.md             # 環境構築手順
-├── conversations/           # 会話履歴保存先
-├── logs/                    # ログファイル保存先
-├── models/                  # ローカルモデル保存先
-├── config.yaml.example      # 設定ファイルサンプル
-├── pyproject.toml           # プロジェクト設定
-├── requirements.txt         # 依存関係
-└── README.md                # 本ファイル
+AI_dev/
+├── llm_chat_app/        # Phase 1: CLI版チャットアプリ
+├── backend/             # Phase 2: FastAPIバックエンド（開発中）
+├── frontend/            # Phase 2: Next.jsフロントエンド（開発中）
+├── docs/                # ドキュメント
+├── tests/               # テスト
+└── .kiro/specs/         # 仕様書（要件定義・設計・タスク）
 ```
 
-## テスト実行方法
+## 開発環境
+
+- **OS**: Windows
+- **Python**: 3.9+
+- **Node.js**: 18+ (フロントエンド)
+- **エディタ**: VS Code + Kiro
+- **バージョン管理**: Git / GitHub
+
+## セットアップ
 
 ```bash
-# 全テストの実行
-pytest
+# クローン
+git clone https://github.com/your-username/AI_dev.git
+cd AI_dev
 
-# 詳細出力で実行
-pytest -v
+# Python仮想環境
+python -m venv .venv
+.venv\Scripts\activate
 
-# 特定のテストファイルを実行
-pytest tests/test_history.py
+# Phase 1 (CLI版)
+pip install -r requirements.txt
+copy config.yaml.example config.yaml
+python -m llm_chat_app.main --mode api
 
-# プロパティベーステストのみ実行
-pytest tests/property_tests/
+# Phase 2 (Web UI + RAG)
+pip install -r backend/requirements.txt
+uvicorn backend.app.main:app --reload --port 8000
 
-# カバレッジレポート付きで実行
-pytest --cov=llm_chat_app --cov-report=term-missing
+# フロントエンド（別ターミナル）
+cd frontend
+npm install
+npm run dev
 ```
 
-### コード品質チェック
-
-```bash
-# フォーマッター
-black llm_chat_app tests
-
-# import整理
-isort llm_chat_app tests
-
-# リンター
-flake8 llm_chat_app tests
-
-# 型チェック
-mypy llm_chat_app
-```
-
-## ドキュメント
-
-- [環境構築手順 (SETUP.md)](docs/SETUP.md)
-- [API_Key設定ガイド (API_SETUP.md)](docs/API_SETUP.md)
-- [ローカルモデルセットアップ (LOCAL_MODEL_SETUP.md)](docs/LOCAL_MODEL_SETUP.md)
+詳細は各フェーズのREADMEを参照してください。
 
 ## ライセンス
 
