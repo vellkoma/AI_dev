@@ -8,7 +8,7 @@ import json
 import time
 import uuid
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from llm_chat_app.models import Conversation, Message
 from backend.app.schemas.history import SessionSummary
@@ -21,7 +21,7 @@ class SessionService:
     ファイル名は `{session_id}.json` 形式。
     """
 
-    def __init__(self, storage_dir: str | Path):
+    def __init__(self, storage_dir: Union[str, Path]):
         """SessionServiceを初期化する。
 
         Args:
