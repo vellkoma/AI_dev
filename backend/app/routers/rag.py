@@ -70,6 +70,14 @@ async def upload_document(
                 "supported_formats": e.supported_formats,
             },
         )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": "ファイルの読み取りに失敗しました",
+                "message": str(e),
+            },
+        )
     except RuntimeError as e:
         raise HTTPException(
             status_code=503,

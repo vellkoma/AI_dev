@@ -16,7 +16,6 @@ export default function Home() {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentModel, setCurrentModel] = useState("gpt-3.5-turbo");
-  const [ragEnabled, setRagEnabled] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [statsOpen, setStatsOpen] = useState(false);
 
@@ -71,8 +70,6 @@ export default function Home() {
         <Sidebar
           currentModel={currentModel}
           onModelChange={setCurrentModel}
-          ragEnabled={ragEnabled}
-          onRagToggle={setRagEnabled}
         />
       </div>
 
@@ -95,7 +92,6 @@ export default function Home() {
           <ChatPanel
             messages={messages}
             onMessagesChange={handleMessagesChange}
-            ragEnabled={ragEnabled}
             sessionId={currentSessionId ?? undefined}
           />
         </div>

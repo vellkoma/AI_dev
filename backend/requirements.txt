@@ -7,7 +7,7 @@ langchain
 langchain-text-splitters
 sentence-transformers
 python-multipart
-PyPDF2
+pdfplumber
 pytest
 pytest-asyncio
 httpx

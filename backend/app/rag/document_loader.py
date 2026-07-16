@@ -81,15 +81,15 @@ class DocumentLoader:
         Raises:
             UnsupportedFormatError: サポート外の形式の場合
         """
-        # content_typeで判定
-        if content_type in self.SUPPORTED_FORMATS:
-            return self.SUPPORTED_FORMATS[content_type]
-
-        # ファイル拡張子で判定
+        # ファイル拡張子で判定（優先）
         ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
         ext_map = {"pdf": "pdf", "txt": "txt", "md": "md", "markdown": "md"}
         if ext in ext_map:
             return ext_map[ext]
+
+        # content_typeで判定（フォールバック）
+        if content_type in self.SUPPORTED_FORMATS:
+            return self.SUPPORTED_FORMATS[content_type]
 
         raise UnsupportedFormatError(
             content_type=content_type,
@@ -99,32 +99,39 @@ class DocumentLoader:
     def _load_pdf(self, content: bytes) -> str:
         """PDFからテキストを抽出する。
 
-        PyPDF2を使用して一時ファイル経由でPDFを読み込み、
+        pdfplumber（pdfminer.six基盤）を使用してPDFを読み込み、
         全ページのテキストを結合して返す。
+        日本語CIDフォントに対する抽出精度が高い。
 
         Args:
             content: PDFファイルのバイナリデータ
 
         Returns:
             抽出されたテキスト文字列
+
+        Raises:
+            ValueError: PDFが暗号化されていて読み取れない場合
         """
-        # 一時ファイルに書き出してPyPDF2で読む
-        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-            tmp.write(content)
-            tmp_path = tmp.name
+        import io
 
         try:
-            from PyPDF2 import PdfReader
+            import pdfplumber
 
-            reader = PdfReader(tmp_path)
-            text_parts = []
-            for page in reader.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text_parts.append(page_text)
-            return "\n".join(text_parts)
-        finally:
-            os.unlink(tmp_path)
+            with pdfplumber.open(io.BytesIO(content)) as pdf:
+                text_parts = []
+                for page in pdf.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        text_parts.append(page_text)
+                return "\n".join(text_parts)
+        except Exception as e:
+            error_str = str(e).lower()
+            if "password" in error_str or "decrypt" in error_str:
+                raise ValueError(
+                    "PDFがパスワードで保護されています。"
+                    "保護を解除してから再度アップロードしてください。"
+                )
+            raise
 
     def _load_text(self, content: bytes) -> str:
         """プレーンテキストをデコードする。

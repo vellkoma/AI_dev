@@ -96,10 +96,16 @@ async def _get_rag_context(
 
     try:
         # RAGServiceのsearch_relevant_chunks + build_rag_contextを呼び出す
-        chunks = await rag_service.search_relevant_chunks(request.message)
+        chunks = rag_service.search_relevant_chunks(request.message)
         if not chunks:
             return None
         context = rag_service.build_rag_context(chunks)
+        logger.info(f"RAGコンテキスト構築完了: {len(chunks)}件のチャンクを使用")
+        return context
+        if not chunks:
+            return None
+        context = rag_service.build_rag_context(chunks)
+        logger.info(f"RAGコンテキスト構築完了: {len(context)}文字")
         return context
     except Exception as e:
         logger.error(f"RAGコンテキスト取得エラー: {e}")

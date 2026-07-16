@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    name: "Python ${{ matrix.python-version }} テスト & 品質チェック"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

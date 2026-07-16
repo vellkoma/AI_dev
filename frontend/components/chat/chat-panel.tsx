@@ -6,10 +6,15 @@ import { MessageInput } from "@/components/chat/message-input";
 import { streamChat } from "@/lib/sse";
 import { Message } from "@/types";
 
+interface AttachedFile {
+  id: string;
+  name: string;
+  chunkCount: number;
+}
+
 interface ChatPanelProps {
   messages: Message[];
   onMessagesChange: (messages: Message[]) => void;
-  ragEnabled?: boolean;
   sessionId?: string;
 }
 
@@ -17,15 +22,23 @@ interface ChatPanelProps {
 export function ChatPanel({
   messages,
   onMessagesChange,
-  ragEnabled = false,
   sessionId,
 }: ChatPanelProps) {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  const handleFileAttach = useCallback((file: AttachedFile) => {
+    setAttachedFiles((prev) => [...prev, file]);
+  }, []);
+
+  const handleFileRemove = useCallback((fileId: string) => {
+    setAttachedFiles((prev) => prev.filter((f) => f.id !== fileId));
+  }, []);
+
   const handleSend = useCallback(
-    (content: string) => {
+    (content: string, hasAttachment: boolean) => {
       // ユーザーメッセージを追加
       const userMessage: Message = {
         role: "user",
@@ -39,6 +52,9 @@ export function ChatPanel({
       setIsStreaming(true);
       setStreamingContent("");
 
+      // ファイルが添付されている場合はRAGを有効にする
+      const ragEnabled = hasAttachment || attachedFiles.length > 0;
+
       const controller = streamChat({
         message: content,
         history: updatedMessages,
@@ -50,7 +66,6 @@ export function ChatPanel({
         onDone: (metadata) => {
           setIsStreaming(false);
           setStreamingContent((prev) => {
-            // アシスタントメッセージを追加
             const assistantMessage: Message = {
               role: "assistant",
               content: prev,
@@ -74,7 +89,6 @@ export function ChatPanel({
         onError: (error) => {
           setIsStreaming(false);
           setStreamingContent("");
-          // エラーメッセージをアシスタントとして表示
           const errorMessage: Message = {
             role: "assistant",
             content: `エラーが発生しました: ${error}`,
@@ -86,7 +100,7 @@ export function ChatPanel({
 
       abortControllerRef.current = controller;
     },
-    [messages, onMessagesChange, ragEnabled, sessionId]
+    [messages, onMessagesChange, attachedFiles, sessionId]
   );
 
   return (
@@ -107,8 +121,14 @@ export function ChatPanel({
         </div>
       )}
 
-      {/* 入力バー */}
-      <MessageInput onSend={handleSend} disabled={isStreaming} />
+      {/* 入力バー（+ボタン付き） */}
+      <MessageInput
+        onSend={handleSend}
+        disabled={isStreaming}
+        attachedFiles={attachedFiles}
+        onFileAttach={handleFileAttach}
+        onFileRemove={handleFileRemove}
+      />
     </div>
   );
 }

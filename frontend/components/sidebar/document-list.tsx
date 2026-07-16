@@ -45,10 +45,10 @@ export function DocumentList() {
     setUploading(true);
     try {
       const result = await api.rag.upload(file);
-      if (result.document_id) {
+      if (result.success && result.document) {
         toast({
           title: "アップロード完了",
-          description: `${file.name} を追加しました（${result.chunk_count} チャンク）`,
+          description: `${file.name} を追加しました（${result.document.chunk_count} チャンク）`,
         });
         fetchDocuments();
       } else {

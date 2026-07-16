@@ -7,25 +7,17 @@ import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import { ModelSelector } from "./model-selector";
-import { RagToggle } from "./rag-toggle";
-import { DocumentList } from "./document-list";
 
 interface SidebarProps {
   /** 現在選択中のモデル名 */
   currentModel: string;
   /** モデル変更時のコールバック */
   onModelChange: (model: string) => void;
-  /** RAGモードが有効かどうか */
-  ragEnabled: boolean;
-  /** RAGモード切り替え時のコールバック */
-  onRagToggle: (enabled: boolean) => void;
 }
 
 export function Sidebar({
   currentModel,
   onModelChange,
-  ragEnabled,
-  onRagToggle,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -61,19 +53,6 @@ export function Sidebar({
             currentModel={currentModel}
             onModelChange={onModelChange}
           />
-
-          <Separator />
-
-          {/* RAGモード設定 */}
-          <RagToggle enabled={ragEnabled} onToggle={onRagToggle} />
-
-          {/* RAGがONの場合にドキュメント一覧を表示 */}
-          {ragEnabled && (
-            <>
-              <Separator />
-              <DocumentList />
-            </>
-          )}
 
           {/* スペーサー：テーマ切り替えを下部に配置 */}
           <div className="flex-1" />
