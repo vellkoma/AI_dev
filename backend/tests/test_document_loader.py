@@ -14,23 +14,10 @@ from backend.app.rag.document_loader import DocumentLoader, UnsupportedFormatErr
 def _create_simple_pdf(text: str = "Hello PDF") -> bytes:
     """テスト用の簡単なPDFバイナリを生成する。
 
-    PyPDF2のPdfWriterを使用して最小限のPDFを作成する。
+    最小限のPDFをバイト列で直接構築する。
     """
-    from PyPDF2 import PdfWriter
-    from PyPDF2.generic import (
-        ArrayObject,
-        DecodedStreamObject,
-        DictionaryObject,
-        NameObject,
-        NumberObject,
-    )
 
-    writer = PdfWriter()
-
-    # 空ページを追加してからテキストを設定する方法
-    # PyPDF2ではページにテキストを直接書くのは複雑なので、
-    # reportlab経由か、もしくは手動でPDFバイトストリームを構築する
-    # ここでは最小限のPDFをバイト列で直接構築する
+    # 最小限のPDFをバイト列で直接構築する
     pdf_content = (
         b"%PDF-1.4\n"
         b"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n"
