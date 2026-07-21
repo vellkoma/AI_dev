@@ -47,7 +47,12 @@ export function StatsPanel({ refreshTrigger = 0 }: StatsPanelProps) {
         api.stats.byModel(),
         api.stats.timeline(currentPeriod),
       ]);
-      setStats(statsRes);
+      setStats({
+        total_requests: statsRes?.total_requests ?? 0,
+        total_tokens: statsRes?.total_tokens ?? 0,
+        average_response_time: statsRes?.average_response_time ?? 0,
+        estimated_cost: statsRes?.estimated_cost ?? 0,
+      });
       setModelData(Array.isArray(modelRes) ? modelRes : []);
       setTimelineData(Array.isArray(timelineRes) ? timelineRes : []);
     } catch (error) {
